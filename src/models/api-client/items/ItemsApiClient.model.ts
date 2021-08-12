@@ -1,34 +1,22 @@
-import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios'
+import { HttpClient, HttpRequestParamsInterface } from "@/models/http-client";
 
-import { ItemsApiClientUrlsInterface } from './ItemsApiClientUrls.interface'
-import { ItemsApiClientInterface } from './ItemsApiClient.interface'
-import { ItemInterface } from '@/models/items/Item.interface'
+import { ItemsApiClientUrlsInterface } from "./ItemsApiClientUrls.interface";
+import { ItemsApiClientInterface } from "./ItemsApiClient.interface";
+import { ItemInterface } from "@/models/items/Item.interface";
 
 export class ItemsApiClientModel implements ItemsApiClientInterface {
-    private readonly urls!: ItemsApiClientUrlsInterface
+  private readonly urls!: ItemsApiClientUrlsInterface;
 
-    constructor(urls: ItemsApiClientUrlsInterface) {
-        this.urls = urls
-    }
+  constructor(urls: ItemsApiClientUrlsInterface) {
+    this.urls = urls;
+  }
 
-    fetchItems(): Promise<ItemInterface[]> {
-        return new Promise<ItemInterface[]>((resolve) => {
-        const url = this.urls.fetchItems
+  fetchItems(): Promise<ItemInterface[]> {
+    const getParameters: HttpRequestParamsInterface = {
+      url: this.urls.fetchItems,
+      requiresToken: false,
+    };
 
-        // axios options
-        const options: AxiosRequestConfig = {
-            headers: {
-            }
-        }
-
-        axios
-            .get(url, options)
-            .then((response: AxiosResponse) => {
-                resolve(response.data as ItemInterface[])
-            })
-            .catch((error: any) => {
-                console.error('ItemsApiClient: HttpClient: Get: error', error)
-            })
-        })
-    }
+    return HttpClient.get<ItemInterface[]>(getParameters);
+  }
 }
